@@ -1,0 +1,5 @@
+packages:
+  # packages下的直接目录是子包
+  - 'packages/*'
+  # 排除文件
+  - '!**/test/**'
