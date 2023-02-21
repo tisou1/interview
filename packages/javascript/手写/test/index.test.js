@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest"
 import mytypeof from "../类型判断"
 import { unique1, unique2, unique3, unique4 } from "../unique"
+import { flat1, flat2, flat3 } from "../flat"
 
 describe("手写测试", () => {
   it("类型判断typeof", () => {
@@ -36,6 +37,28 @@ describe("数组去重", () => {
   })
 
   it("去重函数4 -- (unique4)", () => {
-    expect(unique3(a)).toEqual([1, 2, 3, 4, 5])
+    expect(unique4(a)).toEqual([1, 2, 3, 4, 5])
+  })
+})
+
+describe("数组扁平化", () => {
+  const arr = [[1, [2, [3]], 6], 4]
+
+  it("flat1 test", () => {
+    expect(flat1(arr, 1)).toEqual([1, [2, [3]], 6, 4])
+    expect(flat1(arr, 2)).toEqual([1, 2, [3], 6, 4])
+    expect(flat1(arr, Infinity)).toEqual([1, 2, 3, 6, 4])
+  })
+
+  it("flat2 test", () => {
+    expect(flat2(arr, 1)).toEqual([1, [2, [3]], 6, 4])
+    expect(flat2(arr, 2)).toEqual([1, 2, [3], 6, 4])
+    expect(flat2(arr, Infinity)).toEqual([1, 2, 3, 6, 4])
+  })
+
+  it("flat3 test", () => {
+    expect(flat3(arr, 1)).toEqual([1, [2, [3]], 6, 4])
+    expect(flat3(arr, 2)).toEqual([1, 2, [3], 6, 4])
+    expect(flat3(arr, Infinity)).toEqual([1, 2, 3, 6, 4])
   })
 })

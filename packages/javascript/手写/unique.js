@@ -5,6 +5,7 @@
  */
 export function unique1(array) {
   return [...new Set([...array])]
+  // return Array.from(new Set(array))
 }
 
 export function unique2(array) {
