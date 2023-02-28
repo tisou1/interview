@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest"
 import mytypeof from "../类型判断"
 import { unique1, unique2, unique3, unique4 } from "../unique"
 import { flat1, flat2, flat3 } from "../flat"
+import _instanceof from '../instanceof'
 
 describe("手写测试", () => {
   it("类型判断typeof", () => {
@@ -61,4 +62,11 @@ describe("数组扁平化", () => {
     expect(flat3(arr, 2)).toEqual([1, 2, [3], 6, 4])
     expect(flat3(arr, Infinity)).toEqual([1, 2, 3, 6, 4])
   })
+})
+
+
+it("原型判断", () => {
+  expect(_instanceof([], Array)).toBe(true)
+  expect(_instanceof('asd', Object)).toBe(true)
+  expect(_instanceof('asd', Function)).toBe(false)
 })
