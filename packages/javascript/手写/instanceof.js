@@ -6,7 +6,7 @@
  */
 
 
-export default const _instanceof = (instance, _constructor) => {
+const  _instanceof = (instance, _constructor) => {
     // 由于要检测的是object
     if(typeof instance !== 'object' || instance === null) return
 
@@ -22,3 +22,5 @@ export default const _instanceof = (instance, _constructor) => {
 
     return false
 }
+
+export default _instanceof
