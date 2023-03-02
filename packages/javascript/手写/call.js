@@ -30,3 +30,23 @@ export default function call(obj = window, fn, ...args) {
 
     return ans
 }
+
+// 原型链的写法
+
+Function.prototype.myCall = function(obj = window, ...args) {
+    if(typeof obj !== 'object') {
+        // 值类型转换为对象类型
+        obj = new Object(obj)
+    } 
+
+
+    // 使用symbol创建唯一key
+    const symKey = Symbol();
+    // this指向的fn
+    obj[symKey] = this
+    let ans = obj[symKey](...args);
+    Reflect.deleteProperty(obj, fn);
+    // delete obj.fn
+
+    return ans
+}
