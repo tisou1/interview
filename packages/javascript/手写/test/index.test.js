@@ -9,6 +9,8 @@ import call from "../call"
 import apply from "../apply"
 import bind from "../bind"
 
+import { curry, curry2 } from "../curry"
+
 describe("手写测试", () => {
   it("类型判断typeof", () => {
     let a = []
@@ -105,4 +107,26 @@ describe("call, apply bind 测试", () => {
     expect(apply(obj, getName, ["cc", "dd"])).toBe("siry")
     expect(bind(obj, getName, "cc", "dd")("eee")).toBe("siry")
   })
+})
+
+it("", () => {
+  const add = function (a, b, c) {
+    return a + b + c
+  }
+
+  const fn = curry2(add)
+
+  console.log(fn(1)(2)(3))
+
+  expect(1 + 1).toBe(2)
+
+  function getName(fn, ...args) {
+    console.log(fn)
+  }
+
+  let obj = {
+    name: "siry",
+  }
+
+  // getName.call(obj)
 })
