@@ -9,6 +9,8 @@ import call from "../call"
 import apply from "../apply"
 import bind from "../bind"
 
+import EventBus from "../eventBus"
+
 import { curry, curry2 } from "../curry"
 
 describe("手写测试", () => {
@@ -129,4 +131,21 @@ it("", () => {
   }
 
   // getName.call(obj)
+})
+
+it("Eventbus", () => {
+  let eventbus = new EventBus()
+
+  const add = () => {
+    console.log("点击了1")
+  }
+
+  eventbus.on("click", add)
+  eventbus.on("click", () => {
+    console.log("点击了2")
+  })
+
+  eventbus.off("click", add)
+  eventbus.emit("click")
+  console.log("...")
 })
