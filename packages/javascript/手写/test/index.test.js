@@ -10,6 +10,7 @@ import apply from "../apply"
 import bind from "../bind"
 
 import EventBus from "../eventBus"
+import searchParams, { getParams2 } from "../urlSearch"
 
 import { curry, curry2 } from "../curry"
 
@@ -148,4 +149,14 @@ it("Eventbus", () => {
   eventbus.off("click", add)
   eventbus.emit("click")
   console.log("...")
+})
+
+it("searchParams", () => {
+  const url = "https://example.com?foo=1&bar=2"
+  const params = searchParams(url)
+  console.log(params)
+  expect(params.length).toBe(2)
+
+  console.log(getParams2(url))
+  expect(getParams2(url).foo).toBe("1")
 })
