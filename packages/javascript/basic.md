@@ -154,3 +154,55 @@ FastClick的解决方案是监听touchstart、touchmove和touchend事件，以�
 
 另外，FastClick还实现了一些特殊处理，比如对于滑动（touchmove）操作，会取消后续的click事件，以避免误触。同时，FastClick还会检测目标元素的disabled、readonly、href等属性，以决定是否模拟click事件。
 ```
+
+
+#### 11. let和const注意点
+
+- 声明的变量只在声明时的代码块有效
+- 不存在变量提升
+- 存在暂时性死区没如果在变量声明前使用,会报错
+- 不允许重复声明
+
+
+#### 12. Es6都有什么Iterator遍历器
+
+Set Map
+遍历器(Iterator)是一种接口,为各种不同的数据结构提供统一的访问机制.任何数据结构只要部署了`Iterator`接口,就可以完成遍历操作.
+
+默认部署了`Iterator`的数据有Array, Set, Map, String, arguments, NodeList, TypesArray
+
+
+#### 13. Es6中的类的概念
+
+是一种语法糖, 其绝大多数功能,ES5都可以实现,`class`写法只是让对象原型的写法更加清晰
+
+类中所有方法都是定义在类的`prototype`属性上的
+
+```js
+    class Point {
+  constructor() {
+    // ...
+  }
+
+  toString() {
+    // ...
+  }
+
+  toValue() {
+    // ...
+  }
+}
+
+=========== 等同于 ==============
+
+function Point() {}
+
+Point.prototype = {
+  constructor() {},
+  toString() {},
+  toValue() {},
+};
+```
+
+**静态方法和私有方法**, 静态方法只能通过类名来调用, 而私有方法只能在类内部使用,通过`this.#getName`形式化来调用  
+这两种方法,都不能被实例对象调用.
