@@ -70,48 +70,47 @@ function MyPromise(fn) {
 // 实现then方法
 MyPromise.prototype.then = function (onResolved, onReJected) {
   // 首先判断两个参数是否是函数
-  onReJected = typeof onReJected === "function" ? onReJected : v => v
+  // onReJected = typeof onReJected === "function" ? onReJected : v => v
 
-  onResolved =
-    typeof onResolved === "function"
-      ? onResolved
-      : err => {
-          throw err
-        }
+  // onResolved =
+  //   typeof onResolved === "function"
+  //     ? onResolved
+  //     : err => {
+  //         throw err
+  //       }
 
   // 需要判断状态
 
   // 1. 如果是pending状态, 则需要加入队列
-  if (this.status === PENDING) {
-    this.resolvedCallbacks.push(onResolved)
-    this.rejectedCallbacks.push(onReJected)
-  }
+  // if (this.status === PENDING) {
+  //   this.resolvedCallbacks.push(onResolved)
+  //   this.rejectedCallbacks.push(onReJected)
+  // }
 
-  // 2. 状态时resolved,则执行onResolved
-  if (this.status === RESOLVED) {
-    onResolved(this.value)
-  }
+  // // 2. 状态时resolved,则执行onResolved
+  // if (this.status === RESOLVED) {
+  //   onResolved(this.value)
+  // }
 
-  // 3. 状态时rejected,则执行onRejected
-  if (this.status === REJECTED) {
-    onReJected(this.reason)
-  }
+  // // 3. 状态时rejected,则执行onRejected
+  // if (this.status === REJECTED) {
+  //   onReJected(this.reason)
+  // }
 
   // then的返回值,也还是一个promise
 
 
-  const p = new MyPromise((resolve, reject) => {
+  const promise2 = new MyPromise((resolve, reject) => {
     // .then是一个微任务,这里使用setTimeout模拟
     // 根据状态值来,进行
     if(this.status === RESOLVED) {
       setTimeout(() => {
         try {
-          let value = onResolved(this.value)
-          // 需要判断.then的onResolved回调的返回值是否是一个promise
-          if (value instanceof MyPromise) {
-            value.then(resolve, reject)
+          if(typeof onResolved !== 'function') {
+            resolve(this.value)
           } else {
-            resolve(value)
+            let x = onResolved(this.value)
+            resolvePromise(promise2, x, resolve, reject)
           }
         } catch(error) {
           reject(error)
@@ -120,12 +119,12 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
     } else if(this.status === REJECTED) {
       setTimeout(() => {
         try{
-          let reason = onReJected(this.reason)
-          if(reason instanceof MyPromise) {
-            reason.then(resolve, reject)
-          } else {
-            reject(reason)
-          }
+         if(typeof onReJected !== 'function') {
+          reject(this.reason)
+         } else {
+          let x = onReJected(this.reason)
+          resolvePromise(promise2, x, resolve, reject)
+         }
         } catch(err) {
           reject(err)
         }
@@ -134,11 +133,11 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
       // 需要暂存回调函数
       this.resolvedCallbacks.push(() => {
         try{
-          let value = onResolve(this.value)
-          if (value instanceof MyPromise) {
-            value.then(resolve, reject)
+          if(typeof onResolved !== 'function') {
+            resolve(this.value)
           } else {
-            resolve(value)
+            let x = onResolved(this.value)
+            resolvePromise(promise2, x, resolve, reject)
           }
         } catch(err) {
             reject(err)
@@ -147,12 +146,12 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
 
 
       this.rejectedCallbacks.push(() => {
-        try {
-          let reason = onReJected(this.reason)
-          if(reason instanceof MyPromise) {
-            reason.then(resolve, reject)
+        try{
+          if(typeof onReJected !== 'function') {
+           reject(this.reason)
           } else {
-            reject(reason)
+           let x = onReJected(this.reason)
+           resolvePromise(promise2, x, resolve, reject)
           }
         } catch(err) {
           reject(err)
@@ -160,6 +159,8 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
       })
     }
   })
+
+  return promise2
 }
 
 
@@ -172,4 +173,39 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
  */
 function resolvePromise(promise2, x, resolve, reject){
   // todo
+
+  // 1.如果promise2 等于x, 避免循环引用
+
+  if(x === promise2) {
+    throw new TypeError('产生循环引用')
+  }
+  // 2. x为一个promise
+  if(x instanceof MyPromise) {
+    x.then(y => {
+      resolvePromise(promise2, y, resolve, reject)
+    }, reject)
+  } else if(x !== null && (typeof x === 'object' || typeof x === 'function')) {
+      try{
+        let then = x.then
+      } catch(e) {
+        return reject(e)
+      }
+
+
+      if(typeof then === 'function') {
+        let called = false
+
+        try{
+          then.call(x, y => {
+            if (called) return
+             called = true
+             resolvePromise(promise2, y, resolve, reject)
+            
+          })
+        }catch(e) {
+
+        }
+      }
+    }
+
 }
