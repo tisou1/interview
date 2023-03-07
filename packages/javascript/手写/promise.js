@@ -24,9 +24,10 @@ function MyPromise(fn) {
   const resolve = (value) => {
     // 需要保证回调是在本轮事件循环的末尾执行
     console.log(this);
-    setTimeout(() => {
+  
       // 只有pending状态才可以操作
       if (this.status === PENDING) {
+        setTimeout(() => {
         // 改变当前promise的状态
         this.status = RESOLVED
         // 赋值
@@ -36,14 +37,15 @@ function MyPromise(fn) {
         this.resolvedCallbacks.forEach(callback => {
           callback(value)
         })
+       })
       }
-    })
   }
 
   const reject = (reason) => {
-    setTimeout(() => {
+  
       // 只有pending状态才可以操作
       if (this.status === PENDING) {
+        setTimeout(() => {
         // 改变当前promise的状态
         this.status = REJECTED
         // 赋值
@@ -53,8 +55,8 @@ function MyPromise(fn) {
         this.rejectedCallbacks.forEach(callback => {
           callback(value)
         })
-      }
     })
+      }
   }
 
   // 执行传入的函数
@@ -96,4 +98,78 @@ MyPromise.prototype.then = function (onResolved, onReJected) {
   }
 
   // then的返回值,也还是一个promise
+
+
+  const p = new MyPromise((resolve, reject) => {
+    // .then是一个微任务,这里使用setTimeout模拟
+    // 根据状态值来,进行
+    if(this.status === RESOLVED) {
+      setTimeout(() => {
+        try {
+          let value = onResolved(this.value)
+          // 需要判断.then的onResolved回调的返回值是否是一个promise
+          if (value instanceof MyPromise) {
+            value.then(resolve, reject)
+          } else {
+            resolve(value)
+          }
+        } catch(error) {
+          reject(error)
+        }
+      })
+    } else if(this.status === REJECTED) {
+      setTimeout(() => {
+        try{
+          let reason = onReJected(this.reason)
+          if(reason instanceof MyPromise) {
+            reason.then(resolve, reject)
+          } else {
+            reject(reason)
+          }
+        } catch(err) {
+          reject(err)
+        }
+      })
+    } else if(this.status === PENDING) {
+      // 需要暂存回调函数
+      this.resolvedCallbacks.push(() => {
+        try{
+          let value = onResolve(this.value)
+          if (value instanceof MyPromise) {
+            value.then(resolve, reject)
+          } else {
+            resolve(value)
+          }
+        } catch(err) {
+            reject(err)
+        }
+      })
+
+
+      this.rejectedCallbacks.push(() => {
+        try {
+          let reason = onReJected(this.reason)
+          if(reason instanceof MyPromise) {
+            reason.then(resolve, reject)
+          } else {
+            reject(reason)
+          }
+        } catch(err) {
+          reject(err)
+        }
+      })
+    }
+  })
+}
+
+
+/**
+ * 
+ * @param promise2 promise1.then的返回值
+ * @param x promise1中onResolved的返回值
+ * @param resolve promise2的resolve方法
+ * @param reject promise2的reject方法
+ */
+function resolvePromise(promise2, x, resolve, reject){
+  // todo
 }
