@@ -19,8 +19,11 @@ function MyPromise(fn) {
   // rejected的回调函数集合
   this.rejectedCallbacks = []
 
-  function resolve(value) {
+
+  // 要使用箭头函数,来保证resolve中的this指向构造函数MyPromise
+  const resolve = (value) => {
     // 需要保证回调是在本轮事件循环的末尾执行
+    console.log(this);
     setTimeout(() => {
       // 只有pending状态才可以操作
       if (this.status === PENDING) {
@@ -37,7 +40,7 @@ function MyPromise(fn) {
     })
   }
 
-  function reject(reason) {
+  const reject = (reason) => {
     setTimeout(() => {
       // 只有pending状态才可以操作
       if (this.status === PENDING) {
