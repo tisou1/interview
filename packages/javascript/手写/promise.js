@@ -53,7 +53,7 @@ function MyPromise(fn) {
 
         // 执行回调函数
         this.rejectedCallbacks.forEach(callback => {
-          callback(value)
+          callback(reason)
         })
     })
       }
@@ -185,27 +185,70 @@ function resolvePromise(promise2, x, resolve, reject){
       resolvePromise(promise2, y, resolve, reject)
     }, reject)
   } else if(x !== null && (typeof x === 'object' || typeof x === 'function')) {
+    let then
+    // x为对象或者为函数  
       try{
-        let then = x.then
+        // 把x.then赋值给then
+        then = x.then
       } catch(e) {
         return reject(e)
       }
-
-
+      // x为函数
       if(typeof then === 'function') {
-        let called = false
+        let called = false // 避免多次调用.
 
         try{
-          then.call(x, y => {
-            if (called) return
-             called = true
-             resolvePromise(promise2, y, resolve, reject)
-            
-          })
-        }catch(e) {
-
+          // 如果resolved以参数y进行调用,则运行resolvePromise
+          then.call(x, 
+            y => {
+              if (called) return
+              called = true
+              resolvePromise(promise2, y, resolve, reject)
+            },
+          // 如果rejected以参数r进行调用,则运行resolvePromise
+            r => {
+              if (called) return
+              called = true
+              // 如果reject以r为参数调用,则依据r拒绝promise
+              reject(r)
+            })
+        } catch(e) {
+          // 如果调用then方法出现问题
+          // 如果resolved和rejected已经被调用了, 则忽略
+          if (called) return
+          called = true
+          // 否则以e拒绝promise
+          reject(e)
         }
+      }else {
+        // then不是函数, 以x调用resolve
+        resolve(x)
       }
+    } else {
+      // x不是对象或者函数,以x为参数执行promise
+      return resolve(x)
     }
 
 }
+
+
+
+
+/**
+ * 
+ * 
+ * 
+ * 需要安装 npm install promises-aplus-tests -D
+ * 进行测试
+ * 
+ * MyPromise.deferred = function () {
+  const result = {}
+  result.promise = new MyPromise((resolve, reject) => {
+    result.resolve = resolve
+    result.reject = reject
+  })
+  return result
+}
+
+module.exports = MyPromise
+ */
