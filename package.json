@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run -u"
+    "test": "vitest run -u",
+    "lint": "eslint .",
+    "lint:fix": "eslint . fix"
   },
   "keywords": [],
   "author": "",
