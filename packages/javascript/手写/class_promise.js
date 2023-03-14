@@ -29,7 +29,7 @@ class MyPromise {
       this.state = MyPromise.FULFILLED
       this.value = value
 
-      this.onFulfilledCallbacks.forEach(callback => callback(value))
+      this.onFulfilledCallbacks.forEach(callback => callback(value))``
     }
   }
 
