@@ -141,12 +141,41 @@ class MyPromise {
             // 需要记录每一个promise的返回值
             ans[i] = data
             // 长度够了之后,就resolve
-            if (i === promiseArr.length) resolve(ans)
+            if (i === promiseArr.length - 1) resolve(ans)
           })
           .catch(err => {
             reject(err)
           })
       }
+    })
+  }
+
+  // race的状态 是最先改变状态的的那个promise
+  static race(promiseArr) {
+    if (!Array.isArray(promiseArr)) throw new TypeError("传入非数组")
+    return new MyPromise((resolve, reject) => {
+      for (const i in promiseArr) {
+        promiseArr[i].then(resolve, reject)
+      }
+    })
+  }
+
+  // 所有promise状态都改变了,allSettled才会改变状态为fulfilled
+  static allSettled(promiseArr) {
+    if (!Array.isArray(promiseArr)) throw new TypeError("传入非数组")
+    const ans = []
+    return new MyPromise((resolve, reject) => {
+      for (const i in promiseArr) {
+        MyPromise.resolve(promiseArr[i])
+          .then(data => {
+            ans[i] = data
+          }) // 也可以选择放在then的第二个参数来进行错误不会
+          .catch(e => {
+            ans[i] = e
+          })
+      }
+
+      resolve(ans)
     })
   }
 }
