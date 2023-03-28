@@ -78,25 +78,24 @@ valueOf() 和 toString() 方法将对象转换为基本类型。
 - 对象
 
 ```js
-    let a = {}
-    console.log(a.__proto__)
+const a = {}
+console.log(a.__proto__)
 ```
 
 - 函数
 
 ```js
-    function Fn() {}
-    console.log(Fn.prototype)
+function Fn() {}
+console.log(Fn.prototype)
 ```
 
 - 函数和对象
 
 ```js
-    let a = {}
-    function Fn() {}
-    Object.getPrototypeOf(a)
-    Object.getPrototypeOf(Fn)
-
+const a = {}
+function Fn() {}
+Object.getPrototypeOf(a)
+Object.getPrototypeOf(Fn)
 ```
 
 #### 6. js中安全的number范围
@@ -126,19 +125,20 @@ valueOf() 和 toString() 方法将对象转换为基本类型。
 #### 9. 创建一个ajax请求
 
 ```js
-    const xhr = new XMLHttpRequest()
+const xhr = new XMLHttpRequest()
 
-    xhr.addEventListener('load', function () {
-        if(xhr.status === 200) {
-            console.log(xhr.response, "响应")
-        } else {
-             console.error('请求失败：', xhr.statusText);
-        }
-    })
+xhr.addEventListener('load', () => {
+  if (xhr.status === 200)
+    console.log(xhr.response, '响应')
 
-    xhr.open('GET', url, true)
-    xhr.responseType = 'json'
-    xhr.send()
+  else
+    console.error('请求失败：', xhr.statusText)
+
+})
+
+xhr.open('GET', url, true)
+xhr.responseType = 'json'
+xhr.send()
 ```
 
 #### 10. 手机浏览器的点击延迟
@@ -239,4 +239,98 @@ Base64编码是一种将二进制数据转换为ASCII字符的编码方法，它
 
 #### 16. EventLoop
 
-当 当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行。
+当前执行栈执行完毕时会立刻先处理所有微任务队列中的事件，然后再去宏任务队列中取出一个事件。同一次事件循环中，微任务永远在宏任务之前执行。
+
+
+#### 17. 异步处理
+
+- 回调函数
+```js
+function getData(url, callBack) {
+  // 模拟发送网络请求
+  setTimeout(() => {
+    // 假设 res 就是返回的数据
+    const res = {
+      url,
+      data: Math.random(),
+    }
+    // 执行回调，将数据作为参数传递
+    callBack(res)
+  }, 1000)
+}
+
+// 模拟发送请求
+
+getData('/page/1?param=123', (res1) => {
+  console.log(res1)
+  getData(`/page/2?param=${res1.data}`, (res2) => {
+    console.log(res2)
+    getData(`/page/3?param=${res2.data}`, (res3) => {
+      console.log(res3)
+    })
+  })
+})
+```
+- Promise
+
+```js
+function getDataAsync(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const res = {
+        url,
+        data: Math.random(),
+      }
+      resolve(res)
+    }, 1000)
+  })
+}
+
+getDataAsync('/page/1?param=123')
+  .then((res1) => {
+    console.log(res1)
+    return getDataAsync(`/page/2?param=${res1.data}`)
+  })
+  .then((res2) => {
+    console.log(res2)
+    return getDataAsync(`/page/3?param=${res2.data}`)
+  })
+  .then((res3) => {
+    console.log(res3)
+  })
+```
+- Generator函数
+
+```js
+function * getData() {
+  const res1 = yield getDataAsync('/page/1?param=123')
+  console.log(res1)
+  const res2 = yield getDataAsync(`/page/2?param=${res1.data}`)
+  console.log(res2)
+  const res3 = yield getDataAsync(`/page/2?param=${res2.data}`)
+  console.log(res3)
+}
+
+const g = getData()
+g.next().value.then((res1) => {
+  g.next(res1).value.then((res2) => {
+    g.next(res2).value.then(() => {
+      g.next()
+    })
+  })
+})
+```
+
+
+- async/await
+
+```js
+async function getData() {
+  const res1 = await getDataAsync('/page/1?param=123')
+  console.log(res1)
+  const res2 = await getDataAsync(`/page/2?param=${res1.data}`)
+  console.log(res2)
+  const res3 = await getDataAsync(`/page/2?param=${res2.data}`)
+  console.log(res3)
+}
+```
