@@ -8,6 +8,28 @@
         Object, Function, Array, Regxg, Date, Error
 ```
 
+#### 18. typeof null的结果是object
+
+```
+  在js的第一个版本中,所有值都存储在32位的存储单元中,每个单元都包括一个小的类型标签以及当前要存储的值
+
+  000: object - 当前存储的数据指向一个对象
+  001: init - 当前存储指向一个整型
+  010: double - 当前存储指向一个浮点类型
+  100: string - 当前存储指向一个字符串
+  110: boolean - 当前存储指向一个布尔值
+
+```
+
+
+#### 3.null和undefined的区别
+
+```
+    - null表示空对象, undefined表示未定义
+    - 使用typeof时,null返回object, undefined返回undefined
+    - 使用==符号作用域null和undefined返回true,使用全等返回false
+```
+
 
 #### 2. js内置对象
 
@@ -32,13 +54,6 @@
 ```
 
 
-#### 3.null和undefined的区别
-
-```
-    - null表示空对象, undefined表示未定义
-    - 使用typeof时,null返回object, undefined返回undefined
-    - 使用==符号作用域null和undefined返回true,使用全等返回false
-```
 
 #### 4. 全等运算符和Object.is()区别
 
@@ -122,6 +137,23 @@ Object.getPrototypeOf(Fn)
 - +
     前提是所包含的字符串不包含不合法字符。
 
+
+#### 11. let和const注意点
+
+- 声明的变量只在声明时的代码块有效
+- 不存在变量提升
+- 存在暂时性死区没如果在变量声明前使用,会报错
+- 不允许重复声明
+
+
+#### 12. Es6都有什么Iterator遍历器
+
+Set Map
+遍历器(Iterator)是一种接口,为各种不同的数据结构提供统一的访问机制.任何数据结构只要部署了`Iterator`接口,就可以完成遍历操作.
+
+默认部署了`Iterator`的数据有Array, Set, Map, String, arguments, NodeList, TypesArray
+
+
 #### 9. 创建一个ajax请求
 
 ```js
@@ -154,22 +186,6 @@ FastClick的解决方案是监听touchstart、touchmove和touchend事件，以�
 
 另外，FastClick还实现了一些特殊处理，比如对于滑动（touchmove）操作，会取消后续的click事件，以避免误触。同时，FastClick还会检测目标元素的disabled、readonly、href等属性，以决定是否模拟click事件。
 ```
-
-
-#### 11. let和const注意点
-
-- 声明的变量只在声明时的代码块有效
-- 不存在变量提升
-- 存在暂时性死区没如果在变量声明前使用,会报错
-- 不允许重复声明
-
-
-#### 12. Es6都有什么Iterator遍历器
-
-Set Map
-遍历器(Iterator)是一种接口,为各种不同的数据结构提供统一的访问机制.任何数据结构只要部署了`Iterator`接口,就可以完成遍历操作.
-
-默认部署了`Iterator`的数据有Array, Set, Map, String, arguments, NodeList, TypesArray
 
 
 #### 13. Es6中的类的概念
@@ -336,18 +352,6 @@ async function getData() {
 ```
 
 
-#### 18. typeof null的结果是object
-
-```
-  在js的第一个版本中,所有值都存储在32位的存储单元中,每个单元都包括一个小的类型标签以及当前要存储的值
-
-  000: object - 当前存储的数据指向一个对象
-  001: init - 当前存储指向一个整型
-  010: double - 当前存储指向一个浮点类型
-  100: string - 当前存储指向一个字符串
-  110: boolean - 当前存储指向一个布尔值
-
-```
 
 #### 19. js事件
 
@@ -379,8 +383,34 @@ async function getData() {
   原型链: 当访问一个对象的属性时,首先在该对象上找,如果没有就会上原型上找,这样一直找到原型为null的对象上,即形成原型链.
 ```
 
-#### 22. js在解析const/let/var定义的变量和function声明的函数时,是怎样啊的?
+#### 22. js在解析const/let/var定义的变量和function声明的函数时,是怎样啊的?(变量和函数怎样进行提升的,优先级)
 
 ```
+对所有的函数声明进行提升(除了函数表达式和箭头函数),引用类型的赋值
+  - 开辟堆空间
+  - 存储内容
+  - 将地址赋给变量
 
+对变量进行提升, 只声明不赋值, 值为undefined
+```
+
+
+
+#### 23. `exports`和`export.exports`有什么区别
+
+```
+  导出方式不同
+    - exports.xxx = 'xxx'
+    - export.expoort = {
+      xxx: 'xxx'
+    }
+  exports是module.exports的引用, 两个指向的是同一个地址,而require能看到的只有module.exports
+```
+
+#### 24. ES5和commonjs的区别
+
+```
+  - Commonjs模块输出的是值的拷贝, 而ES6输出的是值得引用
+  - Commonjs是在运行时加载,是一个对象, es6是在编译时加载,是一个代码块
+  - commonjs的this指向当前模块, es6的this指向undefined
 ```
