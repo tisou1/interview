@@ -94,3 +94,28 @@
 [参考](https://blog.csdn.net/qq_54753561/article/details/124240903?spm=1001.2014.3001.5502)
 
 
+
+### 4. css权重
+!import > 内联样式 > id > 类名|属性|伪类 > 标签 > 全局  
+
+无穷大∞>1000>100>10>1>0
+
+
+
+### 5. 响应式布局方案
+
+1. 弹性盒子布局, display: flex
+2. rem布局  --  (回头可以整一个demo测试一下)
+3. 媒体查询(以前用过)
+4. vh + vw
+
+
+
+### 6. css盒模型
+页面中每一个元素都可以被看成一个盒子,盒子是由外边距(margin), 边框(border), 内边距(padding), 内容(content)组成  
+
+有两种盒模型
+- 标准盒模型 box-sizing: context-box;  
+给盒子设置的width时, 最终元素展示的width = border + padding + content
+- 怪异盒模型 box-sizing: border-box;
+给盒子设置的width时, 最终元素展示的的宽度就是设置的. 但是其content会变化, 也就是说要减去padding和border
