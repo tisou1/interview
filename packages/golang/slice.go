@@ -76,7 +76,7 @@ func Uniq[T comparable](collection []T) []T {
 
 
 func UniqBy[T any, U comparable](collection []T, iteratee func(item T) U) []T {
-	result := make([]T, 0 len(collection))
+	result := make([]T, 0, len(collection))
 	seen := make(map[U]struct{}, len(collection))
 
 	for _, item := range collection {
@@ -87,6 +87,20 @@ func UniqBy[T any, U comparable](collection []T, iteratee func(item T) U) []T {
 		}
 		seen[key] = struct{}{}
 		result = append(result, item)
+	}
+
+	return result
+}
+
+
+//
+
+func GroupBy[T any, U comparable](collection []T, iteratee func(item T) U) map[U] []T {
+	result := map[U] []T {}
+
+	for _, item := range collection {
+		key := iteratee(item)
+		result[key] = append(result[key], item)
 	}
 
 	return result
