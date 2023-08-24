@@ -50,9 +50,26 @@ func Reduce[T any, R any](collection []T, accumulator func(agg R, item T, index 
 	return tempAgg
 }
 
-func ForEach[T any](collection T, iteratee func(item T, index int)) {
+func ForEach[T any](collection []T, iteratee func(item T, index int)) {
 	for i, item := range collection {
 		iteratee(item, i)
 	}
 }
 
+
+// 去重
+
+func Uniq[T comparable](collection []T) []T {
+	result := make([]T, 0. len(collection))
+	seen := make(map[T]struct{}, len(collection))
+
+	for _, item := range collection {
+		if _, ok := seen[item], ok {
+			continue
+		}
+		seen[item] = struct{}{}
+		result = append(result, item)
+	}
+	
+	return result
+}
