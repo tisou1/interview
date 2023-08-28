@@ -147,3 +147,39 @@ func Chunk2[T any](collection []T, size int) [][]T {
 
 	return result
 }
+
+// 翻转数组
+
+func Reverse[T any](collection []T) []T {
+	result := make([]T, 0, len(collection))
+
+	for i := 0; i<len(collection); i++ {
+		result = append(result, collection[len(collection) - 1 - i])
+	}
+
+	return result
+}
+
+// 直接翻转原数组
+func Reverse2[T any](collection []T) []T {
+	length := len(collection)
+	half := length / 2
+
+	for i := 0; i < half; i = i + 1 {
+		j := length - 1 - i
+		collection[i], collection[j] = collection[j], collection[i]
+	}
+
+	return collection
+}
+
+
+func Reverse3[T any](collection []T) []T {
+	length := len(collection)
+
+	for i, j := 0, length-1; i < j; i, j = i+1, j-1 {
+		collection[i], collection[j] = collection[j], collection[i]
+	}
+
+	return collection
+}
