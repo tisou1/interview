@@ -105,3 +105,45 @@ func GroupBy[T any, U comparable](collection []T, iteratee func(item T) U) map[U
 
 	return result
 }
+
+
+func Chunk[T any](collection []T, size int) [][]T {
+	length := len(collection)
+	result := make([][]T, 0, length)
+
+	// 判断是否越界
+	for i := 0 ; i < length; {
+		endIndex := i + size
+		if endIndex > length {
+			endIndex = length
+		}
+		result = append(result, collection[i:endIndex])
+		i += size
+	}
+
+	return result
+}
+
+func Chunk2[T any](collection []T, size int) [][]T {
+	if size <= 0 {
+		panic("Second parameter must be greater than 0")
+	}
+
+	chunksNum := len(collection) / size
+	if len(collection)%size != 0 {
+		chunksNum += 1
+	}
+
+	// i+1表示第几组
+	for i := 0; i < chunksNum; i++ {
+		// last为当前组的左后一个索引
+		last := (i + 1) * size
+		// 判断是否越界
+		if last < len(collection) {
+			last = len(collection)
+		}
+		result = append(result, collection(i*size:last))
+	}
+
+	return result
+}
