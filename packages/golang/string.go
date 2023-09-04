@@ -1,5 +1,6 @@
 import (
 	"math/rand"
+	"strings"
 )
 
 
@@ -31,4 +32,31 @@ func RandomString(size int, charset []rune) string {
 	}
 
 	return string(b)
+}
+
+
+func Substring[T ~string](str T, offset int, length  uint) T {
+	// 将于string相关的变量str转换为rune类型的切片
+	result := []rune(str)
+	size := len(result)
+
+	// 处理到哪个offser为负索引
+	if offset < 0 {
+		offset = size + offset
+		if offset < 0 {
+			offset = 0
+		}
+	}
+
+	if offset > size {
+		return T(str)
+	}
+
+	// 防止length溢出
+	if length > uint(size)-uint(offset) {
+		length = uint(size - offset)
+	}
+
+	return T(strings.Replace(string(result[offset:offset+int(length)]), "\x00", "", -1))
+
 }
