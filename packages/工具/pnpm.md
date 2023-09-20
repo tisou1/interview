@@ -3,7 +3,7 @@
 使用workspace
 
 全局安装包
-`pnpm addd vitest -wD`
+`pnpm add vitest -wD`
 -w 表示在根目录安装
 
 `pnpm add lodash -r` 表示安装lodash到所有子包中
