@@ -15,6 +15,7 @@ export default function bind(context = window, fn, ...args) {
 Function.prototype.myBind = function (context = window, ...args) {
   return (...args) => {
     // 这里的this取得是外层函数的,所以这里用箭头函数,
-    return this.myCall(context, [...args, ...args2])
+    return this.myCall(context, ...args, ...args2)
+    // return this.myApply(context, [...args, ...args2])
   }
 }
